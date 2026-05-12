@@ -1,0 +1,108 @@
+import { notFound } from "next/navigation";
+import Image from "next/image";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
+import { SectionContainer, Eyebrow } from "@/components/SectionContainer";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { ArticleCard } from "@/components/ArticleCard";
+import { CTABanner } from "@/components/CTABanner";
+import { AnimateInView } from "@/components/AnimateInView";
+import { cms } from "@/lib/api";
+import { formatDate } from "@/lib/utils";
+import { pageMetadata } from "@/lib/seo";
+
+export const revalidate = 60;
+
+export async function generateMetadata({ params }: { params: { slug: string } }) {
+  const a = await cms.article(params.slug);
+  if (!a) return {};
+  return pageMetadata({
+    title: a.title,
+    description: a.excerpt,
+    path: `/insights/${a.slug}`,
+    image: a.cover,
+  });
+}
+
+export default async function ArticlePage({ params }: { params: { slug: string } }) {
+  const article = await cms.article(params.slug);
+  if (!article) notFound();
+  const all = await cms.articles();
+  const related = all.filter((a) => a.slug !== article.slug).slice(0, 3);
+
+  return (
+    <>
+      <Header />
+      <main className="pt-[64px] md:pt-[72px]">
+        <SectionContainer size="md">
+          <Breadcrumbs
+            items={[
+              { label: "Home", href: "/" },
+              { label: "Insights", href: "/insights" },
+              { label: article.title },
+            ]}
+          />
+        </SectionContainer>
+
+        <SectionContainer size="md">
+          <div className="mx-auto max-w-3xl">
+            <Eyebrow>{article.category}</Eyebrow>
+            <h1 className="serif mt-4 text-display-lg leading-[1.08]">{article.title}</h1>
+            <p className="mt-5 text-body-sm text-concrete-text">
+              {formatDate(article.date)} · {article.author}
+            </p>
+          </div>
+        </SectionContainer>
+
+        <SectionContainer size="md">
+          <div className="relative mx-auto aspect-[16/9] w-full max-w-5xl overflow-hidden rounded-card bg-ink/10">
+            <Image src={article.cover} alt="" fill priority sizes="100vw" className="object-cover" />
+            {/* attribution: cover image from picsum.photos (free placeholder) */}
+          </div>
+        </SectionContainer>
+
+        <SectionContainer size="md">
+          <article className="mx-auto max-w-reading">
+            <p className="serif text-h2 text-ink">{article.excerpt}</p>
+            {article.body.map((p, i) => (
+              <p key={i} className="mt-6 text-body text-concrete-text">
+                {p}
+              </p>
+            ))}
+            <blockquote className="my-10 border-l-2 border-accent pl-6 serif text-h3 text-ink">
+              "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer fermentum
+              nibh ut enim suscipit, in pulvinar lectus tincidunt."
+            </blockquote>
+            {article.body.slice(0, 2).map((p, i) => (
+              <p key={`b-${i}`} className="mt-6 text-body text-concrete-text">
+                {p}
+              </p>
+            ))}
+          </article>
+        </SectionContainer>
+
+        <SectionContainer size="lg">
+          <div className="flex items-end justify-between gap-6">
+            <div>
+              <Eyebrow>More reading</Eyebrow>
+              <h2 className="serif mt-4 text-h1">Related articles.</h2>
+            </div>
+          </div>
+          <div className="mt-10 grid grid-cols-1 gap-x-8 gap-y-12 md:grid-cols-3">
+            {related.map((a, i) => (
+              <AnimateInView key={a.slug} delay={i * 0.05}>
+                <ArticleCard article={a} />
+              </AnimateInView>
+            ))}
+          </div>
+        </SectionContainer>
+
+        <CTABanner
+          heading="Get the next one in your inbox."
+          sub="One quarterly digest, hand-curated. No spam."
+        />
+      </main>
+      <Footer />
+    </>
+  );
+}
