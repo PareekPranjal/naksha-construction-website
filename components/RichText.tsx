@@ -58,6 +58,10 @@ function slugify(s: string): string {
     .slice(0, 80) || undefined as unknown as string;
 }
 
+// Brand link styling — matches the site's accent (secondary green) palette.
+const LINK_CLASS =
+  "text-accent underline underline-offset-4 decoration-accent/40 hover:text-accent-hi hover:decoration-accent-hi transition-colors";
+
 const VOID_TAGS = new Set(["br", "hr", "img"]);
 const ALLOWED_TAGS = new Set([
   "p", "br", "strong", "b", "em", "i", "u", "s", "del", "ins", "span",
@@ -116,7 +120,7 @@ function renderNode(
     }
     const href = resolvedHit?.url ?? stored;
     return (
-      <Link key={key} href={href} className={className}>
+      <Link key={key} href={href} className={`${LINK_CLASS} ${className ?? ""}`.trim()}>
         {children}
       </Link>
     );
@@ -127,13 +131,20 @@ function renderNode(
     const isExternal = /^https?:\/\//i.test(href);
     if (isExternal) {
       return (
-        <a key={key} href={href} rel="noopener noreferrer" target="_blank" className={className} style={style}>
+        <a
+          key={key}
+          href={href}
+          rel="noopener noreferrer"
+          target="_blank"
+          className={`${LINK_CLASS} ${className ?? ""}`.trim()}
+          style={style}
+        >
           {children}
         </a>
       );
     }
     return (
-      <Link key={key} href={href} className={className}>
+      <Link key={key} href={href} className={`${LINK_CLASS} ${className ?? ""}`.trim()}>
         {children}
       </Link>
     );
@@ -234,5 +245,11 @@ export async function RichText({ html, className, raw }: Props) {
   );
 
   if (raw) return <>{tree}</>;
-  return <div className={`prose prose-neutral max-w-none prose-headings:scroll-mt-24 ${className ?? ""}`}>{tree}</div>;
+  return (
+    <div
+      className={`prose prose-neutral max-w-none prose-headings:scroll-mt-24 prose-a:text-accent prose-a:no-underline hover:prose-a:text-accent-hi ${className ?? ""}`}
+    >
+      {tree}
+    </div>
+  );
 }
