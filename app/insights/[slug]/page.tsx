@@ -8,7 +8,7 @@ import { ArticleCard } from "@/components/ArticleCard";
 import { CTABanner } from "@/components/CTABanner";
 import { AnimateInView } from "@/components/AnimateInView";
 import { cms } from "@/lib/api";
-import { RichText } from "@/components/RichText";
+import { Paragraphs } from "@/components/Paragraphs";
 import { formatDate } from "@/lib/utils";
 import {
   generateArticleMetadata,
@@ -78,13 +78,14 @@ export default async function ArticlePage({ params }: { params: { slug: string }
 
         <SectionContainer size="md">
           <article className="mx-auto max-w-reading">
-            <div className="serif text-h2 text-ink prose-h2:serif">
-              <RichText html={raw.excerpt} raw />
+            <div className="serif text-h2 text-ink">
+              <Paragraphs text={raw.excerpt} as="div" paragraphClassName="serif text-h2 text-ink" />
             </div>
             <div className="mt-6">
-              <RichText
-                html={raw.body}
-                className="prose-p:mt-6 prose-p:text-body prose-p:text-concrete-text"
+              <Paragraphs
+                text={raw.body}
+                as="div"
+                paragraphClassName="mt-6 text-body text-concrete-text first:mt-0"
               />
             </div>
           </article>
