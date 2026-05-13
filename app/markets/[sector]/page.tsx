@@ -10,7 +10,8 @@ import { AnimateInView } from "@/components/AnimateInView";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Paragraphs } from "@/components/Paragraphs";
 import { cms } from "@/lib/api";
-import { pageMetadata } from "@/lib/seo";
+import { generateMarketMetadata, generateBreadcrumbSchema, SITE_URL } from "@/lib/seo";
+import { JsonLd } from "@/components/JsonLd";
 import { picsum } from "@/lib/utils";
 
 export const revalidate = 60;
@@ -18,12 +19,7 @@ export const revalidate = 60;
 export async function generateMetadata({ params }: { params: { sector: string } }) {
   const m = await cms.market(params.sector);
   if (!m) return {};
-  return pageMetadata({
-    title: m.seoTitle ?? m.title,
-    description: m.seoDescription ?? m.summary,
-    path: `/markets/${m.slug}`,
-    image: m.seoOgImage ?? m.image ?? undefined,
-  });
+  return generateMarketMetadata(m);
 }
 
 export default async function MarketDetailPage({ params }: { params: { sector: string } }) {
@@ -34,8 +30,15 @@ export default async function MarketDetailPage({ params }: { params: { sector: s
   const fillers = all.filter((p) => p.category !== market.title).slice(0, 3 - related.length);
   const showcase = [...related, ...fillers].slice(0, 3);
 
+  const breadcrumb = generateBreadcrumbSchema([
+    { name: "Home", url: `${SITE_URL}/` },
+    { name: "Markets", url: `${SITE_URL}/markets` },
+    { name: market.title, url: `${SITE_URL}/markets/${market.slug}` },
+  ]);
+
   return (
     <>
+      <JsonLd data={breadcrumb} />
       <Header />
       <main className="pt-[64px] md:pt-[72px]">
         <PageHero

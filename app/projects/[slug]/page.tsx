@@ -12,24 +12,30 @@ import { AnimateInView } from "@/components/AnimateInView";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Paragraphs } from "@/components/Paragraphs";
 import { cms } from "@/lib/api";
-import { pageMetadata } from "@/lib/seo";
+import {
+  generateProjectMetadata,
+  generateBreadcrumbSchema,
+  generateProjectSchema,
+  getGlobalSEO,
+  SITE_URL,
+} from "@/lib/seo";
+import { JsonLd } from "@/components/JsonLd";
 
 export const revalidate = 60;
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const p = await cms.project(params.slug);
+  const p = await cms.projectRaw(params.slug);
   if (!p) return {};
-  return pageMetadata({
-    title: p.title,
-    description: `${p.category} project in ${p.location}.`,
-    path: `/projects/${p.slug}`,
-    image: p.cover,
-  });
+  return generateProjectMetadata(p);
 }
 
 export default async function ProjectDetailPage({ params }: { params: { slug: string } }) {
-  const project = await cms.project(params.slug);
-  if (!project) notFound();
+  const [project, raw, global] = await Promise.all([
+    cms.project(params.slug),
+    cms.projectRaw(params.slug),
+    getGlobalSEO(),
+  ]);
+  if (!project || !raw) notFound();
   const all = await cms.projects();
   const related = all.filter((p) => p.slug !== project.slug && p.category === project.category).slice(0, 3);
   const filler = all
@@ -37,8 +43,16 @@ export default async function ProjectDetailPage({ params }: { params: { slug: st
     .slice(0, 3 - related.length);
   const more = [...related, ...filler].slice(0, 3);
 
+  const breadcrumb = generateBreadcrumbSchema([
+    { name: "Home", url: `${SITE_URL}/` },
+    { name: "Projects", url: `${SITE_URL}/projects` },
+    { name: project.title, url: `${SITE_URL}/projects/${project.slug}` },
+  ]);
+  const projectSchema = generateProjectSchema(raw, global);
+
   return (
     <>
+      <JsonLd data={[breadcrumb, projectSchema]} />
       <Header />
       <main className="pt-[64px] md:pt-[72px]">
         {/* Cover */}

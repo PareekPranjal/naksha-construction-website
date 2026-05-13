@@ -3,17 +3,16 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { BlockRenderer } from "@/components/blocks/BlockRenderer";
 import { cms } from "@/lib/api";
-import { pageMetadata } from "@/lib/seo";
+import { generatePageMetadata } from "@/lib/seo";
 
 export const revalidate = 60;
 
 export async function generateMetadata() {
   const page = await cms.page("markets-index");
-  return pageMetadata({
-    title: page?.seoTitle ?? "Markets",
+  return generatePageMetadata("/markets", {
+    title: page?.seoTitle ?? "Markets We Serve",
     description: page?.seoDescription ?? undefined,
-    path: "/markets",
-    image: page?.seoOgImage ?? undefined,
+    ogImage: page?.seoOgImage ?? undefined,
   });
 }
 

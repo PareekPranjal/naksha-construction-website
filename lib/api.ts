@@ -22,8 +22,21 @@ async function getOrNull<T>(path: string, opts: { revalidate?: number } = {}): P
   return res.json();
 }
 
+// Embedded SEO columns (now present on Project / Service / Market / Article / Leader / Job).
+export type ApiCollectionSEO = {
+  seoTitle: string | null;
+  seoDescription: string | null;
+  seoOgImage: string | null;
+  seoKeywords: string[] | null;
+  seoOgTitle: string | null;
+  seoOgDescription: string | null;
+  seoCanonicalUrl: string | null;
+  seoNoIndex: boolean | null;
+  seoNoFollow: boolean | null;
+};
+
 // ── API row shapes (mirror Prisma) ───────────────────────────────────────────
-type ApiProject = {
+export type ApiProject = ApiCollectionSEO & {
   id: string;
   slug: string;
   title: string;
@@ -38,9 +51,10 @@ type ApiProject = {
   coverImage: string | null;
   gallery: { url: string; alt: string }[];
   highlights: string[];
+  updatedAt: string;
 };
 
-type ApiArticle = {
+export type ApiArticle = ApiCollectionSEO & {
   id: string;
   slug: string;
   title: string;
@@ -50,9 +64,10 @@ type ApiArticle = {
   author: string;
   category: string | null;
   publishedAt: string;
+  updatedAt: string;
 };
 
-type ApiJob = {
+export type ApiJob = ApiCollectionSEO & {
   id: string;
   slug: string;
   title: string;
@@ -63,6 +78,7 @@ type ApiJob = {
   responsibilities: string[];
   requirements: string[];
   benefits: string[];
+  updatedAt: string;
 };
 
 type ApiLocation = {
@@ -75,13 +91,14 @@ type ApiLocation = {
   image: string | null;
 };
 
-type ApiLeader = {
+export type ApiLeader = ApiCollectionSEO & {
   id: string;
   slug: string;
   name: string;
   role: string;
   bio: string;
   portrait: string | null;
+  updatedAt: string;
 };
 
 // ── Adapters: API row → legacy lib/data type so existing components work ─────
@@ -150,19 +167,17 @@ function adaptLeader(l: ApiLeader): Leader {
 }
 
 // ── Additional types for markets, services, page docs, globals ───────────────
-type ApiMarket = {
+export type ApiMarket = ApiCollectionSEO & {
   id: string;
   slug: string;
   title: string;
   summary: string;
   image: string | null;
   body: string;
-  seoTitle: string | null;
-  seoDescription: string | null;
-  seoOgImage: string | null;
+  updatedAt: string;
 };
 
-type ApiService = {
+export type ApiService = ApiCollectionSEO & {
   id: string;
   slug: string;
   title: string;
@@ -170,9 +185,7 @@ type ApiService = {
   icon: string | null;
   bullets: string[];
   body: string;
-  seoTitle: string | null;
-  seoDescription: string | null;
-  seoOgImage: string | null;
+  updatedAt: string;
 };
 
 type ApiTestimonial = {
@@ -221,6 +234,10 @@ export const cms = {
     const p = await getOrNull<ApiProject>(`/projects/by-slug/${encodeURIComponent(slug)}`);
     return p ? adaptProject(p) : null;
   },
+  // Raw API fetchers — preserve embedded SEO columns for use in generateMetadata().
+  async projectRaw(slug: string): Promise<ApiProject | null> {
+    return getOrNull<ApiProject>(`/projects/by-slug/${encodeURIComponent(slug)}`);
+  },
   async articles(): Promise<Article[]> {
     const list = await get<ApiArticle[]>("/articles");
     return list.map(adaptArticle);
@@ -229,6 +246,9 @@ export const cms = {
     const a = await getOrNull<ApiArticle>(`/articles/by-slug/${encodeURIComponent(slug)}`);
     return a ? adaptArticle(a) : null;
   },
+  async articleRaw(slug: string): Promise<ApiArticle | null> {
+    return getOrNull<ApiArticle>(`/articles/by-slug/${encodeURIComponent(slug)}`);
+  },
   async jobs(): Promise<Job[]> {
     const list = await get<ApiJob[]>("/jobs");
     return list.map(adaptJob);
@@ -236,6 +256,9 @@ export const cms = {
   async job(slug: string): Promise<Job | null> {
     const j = await getOrNull<ApiJob>(`/jobs/by-slug/${encodeURIComponent(slug)}`);
     return j ? adaptJob(j) : null;
+  },
+  async jobRaw(slug: string): Promise<ApiJob | null> {
+    return getOrNull<ApiJob>(`/jobs/by-slug/${encodeURIComponent(slug)}`);
   },
   async locations(): Promise<ReturnType<typeof adaptLocation>[]> {
     const list = await get<ApiLocation[]>("/locations");

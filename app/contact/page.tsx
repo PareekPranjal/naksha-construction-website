@@ -3,17 +3,16 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { BlockRenderer } from "@/components/blocks/BlockRenderer";
 import { cms } from "@/lib/api";
-import { pageMetadata } from "@/lib/seo";
+import { generatePageMetadata } from "@/lib/seo";
 
 export const revalidate = 60;
 
 export async function generateMetadata() {
   const page = await cms.page("contact");
-  return pageMetadata({
-    title: page?.seoTitle ?? "Contact",
+  return generatePageMetadata("/contact", {
+    title: page?.seoTitle ?? "Contact Naksha Construction — Jaipur Office",
     description: page?.seoDescription ?? undefined,
-    path: "/contact",
-    image: page?.seoOgImage ?? undefined,
+    ogImage: page?.seoOgImage ?? undefined,
   });
 }
 

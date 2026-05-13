@@ -3,17 +3,16 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { BlockRenderer } from "@/components/blocks/BlockRenderer";
 import { cms } from "@/lib/api";
-import { pageMetadata } from "@/lib/seo";
+import { generatePageMetadata } from "@/lib/seo";
 
 export const revalidate = 60;
 
 export async function generateMetadata() {
   const page = await cms.page("home");
-  return pageMetadata({
-    title: page?.seoTitle ?? "Naksha Construction",
+  return generatePageMetadata("/", {
+    title: page?.seoTitle ?? undefined,
     description: page?.seoDescription ?? undefined,
-    path: "/",
-    image: page?.seoOgImage ?? undefined,
+    ogImage: page?.seoOgImage ?? undefined,
   });
 }
 

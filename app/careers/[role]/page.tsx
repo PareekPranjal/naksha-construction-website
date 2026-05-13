@@ -9,26 +9,43 @@ import { Briefcase, MapPin, ArrowRight } from "lucide-react";
 import { LOREM } from "@/lib/data";
 import { Paragraphs } from "@/components/Paragraphs";
 import { cms } from "@/lib/api";
-import { pageMetadata } from "@/lib/seo";
+import { generateJobMetadata, generateBreadcrumbSchema, SITE_URL } from "@/lib/seo";
+import { JsonLd } from "@/components/JsonLd";
 
 export const revalidate = 60;
 
 export async function generateMetadata({ params }: { params: { role: string } }) {
-  const j = await cms.job(params.role);
+  const j = await cms.jobRaw(params.role);
   if (!j) return {};
-  return pageMetadata({
-    title: j.title,
-    description: j.summary,
-    path: `/careers/${j.slug}`,
-  });
+  return generateJobMetadata(j);
 }
 
 export default async function RolePage({ params }: { params: { role: string } }) {
   const job = await cms.job(params.role);
   if (!job) notFound();
 
+  const breadcrumb = generateBreadcrumbSchema([
+    { name: "Home", url: `${SITE_URL}/` },
+    { name: "Careers", url: `${SITE_URL}/careers` },
+    { name: "Openings", url: `${SITE_URL}/careers/openings` },
+    { name: job.title, url: `${SITE_URL}/careers/${job.slug}` },
+  ]);
+  const jobSchema = {
+    "@context": "https://schema.org",
+    "@type": "JobPosting",
+    title: job.title,
+    description: job.summary,
+    employmentType: job.type,
+    hiringOrganization: { "@type": "Organization", name: "Naksha Construction", sameAs: SITE_URL },
+    jobLocation: {
+      "@type": "Place",
+      address: { "@type": "PostalAddress", addressLocality: job.location, addressCountry: "IN" },
+    },
+  };
+
   return (
     <>
+      <JsonLd data={[breadcrumb, jobSchema]} />
       <Header />
       <main className="pt-[64px] md:pt-[72px]">
         <SectionContainer size="md">

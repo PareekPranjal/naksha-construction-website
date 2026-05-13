@@ -9,7 +9,14 @@ import { ProjectCard } from "@/components/ProjectCard";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { AnimateInView } from "@/components/AnimateInView";
 import { cms } from "@/lib/api";
-import { pageMetadata } from "@/lib/seo";
+import {
+  generateServiceMetadata,
+  generateBreadcrumbSchema,
+  generateServiceSchema,
+  getGlobalSEO,
+  SITE_URL,
+} from "@/lib/seo";
+import { JsonLd } from "@/components/JsonLd";
 import { picsum } from "@/lib/utils";
 
 export const revalidate = 60;
@@ -17,21 +24,24 @@ export const revalidate = 60;
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const s = await cms.service(params.slug);
   if (!s) return {};
-  return pageMetadata({
-    title: s.seoTitle ?? s.title,
-    description: s.seoDescription ?? s.summary,
-    path: `/services/${s.slug}`,
-    image: s.seoOgImage ?? s.icon ?? undefined,
-  });
+  return generateServiceMetadata(s);
 }
 
 export default async function ServiceDetailPage({ params }: { params: { slug: string } }) {
-  const service = await cms.service(params.slug);
+  const [service, global] = await Promise.all([cms.service(params.slug), getGlobalSEO()]);
   if (!service) notFound();
   const related = (await cms.projects()).slice(0, 3);
 
+  const breadcrumb = generateBreadcrumbSchema([
+    { name: "Home", url: `${SITE_URL}/` },
+    { name: "Services", url: `${SITE_URL}/services` },
+    { name: service.title, url: `${SITE_URL}/services/${service.slug}` },
+  ]);
+  const serviceSchema = generateServiceSchema(service, global);
+
   return (
     <>
+      <JsonLd data={[breadcrumb, serviceSchema]} />
       <Header />
       <main className="pt-[64px] md:pt-[72px]">
         <PageHero

@@ -6,14 +6,15 @@ import { TwoColumnSplit } from "@/components/TwoColumnSplit";
 import { StatStrip } from "@/components/StatCounter";
 import { CTABanner } from "@/components/CTABanner";
 import { LOREM } from "@/lib/data";
-import { pageMetadata } from "@/lib/seo";
+import { generatePageMetadata } from "@/lib/seo";
 import { picsum } from "@/lib/utils";
 
-export const metadata = pageMetadata({
-  title: "Why Naksha",
-  description: "What it's like to work at Naksha Construction.",
-  path: "/careers/why-naksha",
-});
+export async function generateMetadata() {
+  return generatePageMetadata("/careers/why-naksha", {
+    title: "Why Naksha — Working at Naksha Construction",
+    description: "What it's like to work at Naksha Construction — values, benefits, and how we hire.",
+  });
+}
 
 const VALUES = [
   { title: "Craft", body: LOREM.medium },

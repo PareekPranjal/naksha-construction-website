@@ -9,29 +9,43 @@ import { CTABanner } from "@/components/CTABanner";
 import { AnimateInView } from "@/components/AnimateInView";
 import { cms } from "@/lib/api";
 import { formatDate } from "@/lib/utils";
-import { pageMetadata } from "@/lib/seo";
+import {
+  generateArticleMetadata,
+  generateBreadcrumbSchema,
+  generateArticleSchema,
+  getGlobalSEO,
+  SITE_URL,
+} from "@/lib/seo";
+import { JsonLd } from "@/components/JsonLd";
 
 export const revalidate = 60;
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const a = await cms.article(params.slug);
+  const a = await cms.articleRaw(params.slug);
   if (!a) return {};
-  return pageMetadata({
-    title: a.title,
-    description: a.excerpt,
-    path: `/insights/${a.slug}`,
-    image: a.cover,
-  });
+  return generateArticleMetadata(a);
 }
 
 export default async function ArticlePage({ params }: { params: { slug: string } }) {
-  const article = await cms.article(params.slug);
-  if (!article) notFound();
-  const all = await cms.articles();
+  const [article, raw, all, global] = await Promise.all([
+    cms.article(params.slug),
+    cms.articleRaw(params.slug),
+    cms.articles(),
+    getGlobalSEO(),
+  ]);
+  if (!article || !raw) notFound();
   const related = all.filter((a) => a.slug !== article.slug).slice(0, 3);
+
+  const breadcrumb = generateBreadcrumbSchema([
+    { name: "Home", url: `${SITE_URL}/` },
+    { name: "Insights", url: `${SITE_URL}/insights` },
+    { name: article.title, url: `${SITE_URL}/insights/${article.slug}` },
+  ]);
+  const articleSchema = generateArticleSchema(raw, global);
 
   return (
     <>
+      <JsonLd data={[breadcrumb, articleSchema]} />
       <Header />
       <main className="pt-[64px] md:pt-[72px]">
         <SectionContainer size="md">

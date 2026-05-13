@@ -1,5 +1,12 @@
 // Site-wide constants — easy single-place edits when client supplies real content.
 
+// Production canonical URL. Override via NEXT_PUBLIC_SITE_URL when a custom
+// domain is wired up; otherwise we point at the Vercel preview URL so sitemap,
+// canonical, and OG tags resolve to a real, crawlable host.
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ??
+  "https://naksha-construction-website.vercel.app";
+
 export const SITE = {
   name: "Naksha Construction",
   shortName: "Naksha",
@@ -8,7 +15,7 @@ export const SITE = {
   founded: 2014,
   yearsExperience: 11,
   teamSize: "50+",
-  url: "https://nakshaconstruction.example",
+  url: SITE_URL,
   email: "hello@nakshaconstruction.example",
   phone: "+91 98765 43210",
   address: {

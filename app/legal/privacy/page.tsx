@@ -3,16 +3,15 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { BlockRenderer } from "@/components/blocks/BlockRenderer";
 import { cms } from "@/lib/api";
-import { pageMetadata } from "@/lib/seo";
+import { generatePageMetadata } from "@/lib/seo";
 
 export const revalidate = 60;
 
 export async function generateMetadata() {
   const page = await cms.page("legal-privacy");
-  return pageMetadata({
+  return generatePageMetadata("/legal/privacy", {
     title: page?.seoTitle ?? "Privacy Policy",
-    description: page?.seoDescription ?? undefined,
-    path: "/legal/privacy",
+    description: page?.seoDescription ?? "Privacy policy for Naksha Construction.",
   });
 }
 
