@@ -286,6 +286,10 @@ export const cms = {
   async page(key: string): Promise<ApiPage | null> {
     return getOrNull<ApiPage>(`/pages/by-key/${encodeURIComponent(key)}`);
   },
+  async pageByPath(path: string): Promise<ApiPage | null> {
+    const p = path.startsWith("/") ? path : `/${path}`;
+    return getOrNull<ApiPage>(`/pages/by-path?path=${encodeURIComponent(p)}`);
+  },
   async global(key: string): Promise<ApiGlobal | null> {
     return getOrNull<ApiGlobal>(`/globals/${encodeURIComponent(key)}`);
   },
