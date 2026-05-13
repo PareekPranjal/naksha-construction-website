@@ -1,5 +1,9 @@
 import { cn } from "@/lib/utils";
-import { RichText } from "./RichText";
+
+// Tailwind classes applied to <a> tags rendered from HTML rich-text. Mirrors
+// the brand link styling used by the server-side <RichText> renderer.
+const HTML_LINK_STYLES =
+  "[&_a]:text-accent [&_a]:underline [&_a]:underline-offset-4 [&_a]:decoration-accent/40 hover:[&_a]:text-accent-hi hover:[&_a]:decoration-accent-hi [&_a]:transition-colors";
 
 /**
  * Render a multi-line text field as a sequence of <p> tags.
@@ -7,8 +11,12 @@ import { RichText } from "./RichText";
  * editors who type Enter once still get visual paragraphs.
  *
  * Defaults render the body-text style used across the site.
+ *
+ * Stays synchronous so it can be used from both server and client components.
+ * Server-only pages that need internal-link slug resolution should call
+ * <RichText> directly instead.
  */
-export async function Paragraphs({
+export function Paragraphs({
   text,
   className,
   paragraphClassName,
@@ -20,14 +28,15 @@ export async function Paragraphs({
   as?: "p" | "div";
 }) {
   if (!text) return null;
-  // Rich-text HTML (from the admin editor) → delegate to RichText so internal
-  // links, headings, iframes etc. render correctly. `raw` skips the prose
-  // wrapper so existing layouts don't shift.
+  // Rich-text HTML (from the admin editor) → render as innerHTML. Content is
+  // already sanitized server-side. Strip stray &nbsp;/U+00A0 so words wrap.
   if (/<[a-z!\/]/i.test(text)) {
+    const cleaned = text.replace(/&nbsp;/gi, " ").replace(/ /g, " ");
     return (
-      <div className={cn(className, paragraphClassName)}>
-        <RichText html={text} raw />
-      </div>
+      <div
+        className={cn(className, paragraphClassName, HTML_LINK_STYLES)}
+        dangerouslySetInnerHTML={{ __html: cleaned }}
+      />
     );
   }
   const paragraphs = text.split(/\n+/).map((s) => s.trim()).filter(Boolean);
