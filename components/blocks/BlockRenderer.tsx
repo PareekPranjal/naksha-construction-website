@@ -15,6 +15,7 @@ import { LeadershipBlock } from "./LeadershipBlock";
 import { LocationsGridBlock } from "./LocationsGridBlock";
 import { TestimonialsBlock } from "./TestimonialsBlock";
 import { OpenRolesBlock } from "./OpenRolesBlock";
+import { GalleryBlock } from "./GalleryBlock";
 
 export function BlockRenderer({ blocks }: { blocks: unknown }) {
   const list: Block[] = Array.isArray(blocks) ? (blocks as Block[]) : [];
@@ -62,6 +63,8 @@ function BlockSwitch({ block }: { block: Block }) {
       return <TestimonialsBlock />;
     case "openRoles":
       return <OpenRolesBlock />;
+    case "gallery":
+      return <GalleryBlock block={block} />;
     default:
       return null;
   }

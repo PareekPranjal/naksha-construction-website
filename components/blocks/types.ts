@@ -62,6 +62,15 @@ export type LongformBlockData = {
   body?: string;
 };
 
+export type GalleryBlockData = {
+  type: "gallery";
+  heading?: string;
+  intro?: string;
+  items?: { url: string; alt?: string }[];
+  /** Cards per row at md+. Defaults to 3. */
+  columns?: 2 | 3 | 4;
+};
+
 export type Block =
   | HeroBlockData
   | StatsBlockData
@@ -71,4 +80,5 @@ export type Block =
   | TimelineBlockData
   | CommitmentsBlockData
   | ContactFormBlockData
-  | LongformBlockData;
+  | LongformBlockData
+  | GalleryBlockData;
