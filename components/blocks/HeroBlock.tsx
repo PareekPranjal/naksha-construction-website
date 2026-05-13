@@ -4,7 +4,15 @@ import { ArrowRight } from "lucide-react";
 import { Paragraphs } from "../Paragraphs";
 import type { HeroBlockData } from "./types";
 
+const SIZE_CLASSES: Record<NonNullable<HeroBlockData["size"]>, string> = {
+  full: "min-h-screen pb-20 pt-32 md:pb-28 md:pt-40 lg:pb-32",
+  lg: "min-h-[78vh] pb-16 pt-28 md:pb-24 md:pt-36",
+  md: "min-h-[55vh] pb-12 pt-24 md:pb-20 md:pt-28",
+  sm: "min-h-[40vh] pb-10 pt-20 md:pb-14 md:pt-24",
+};
+
 export function HeroBlock({ block }: { block: HeroBlockData }) {
+  const sizeClass = SIZE_CLASSES[block.size ?? "full"];
   return (
     <section className="relative isolate overflow-hidden bg-ink text-paper">
       {block.image && (
@@ -20,7 +28,7 @@ export function HeroBlock({ block }: { block: HeroBlockData }) {
           <div className="absolute inset-0 bg-gradient-to-b from-ink/40 via-ink/40 to-ink/85" />
         </>
       )}
-      <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-7xl flex-col justify-end px-6 pb-20 pt-32 md:pb-28 md:pt-40 lg:px-8 lg:pb-32">
+      <div className={`relative z-10 mx-auto flex w-full max-w-7xl flex-col justify-end px-6 lg:px-8 ${sizeClass}`}>
         {block.eyebrow && (
           <p className="eyebrow text-accent">{block.eyebrow}</p>
         )}

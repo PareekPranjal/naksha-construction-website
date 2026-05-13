@@ -11,6 +11,8 @@ export type HeroBlockData = {
   ctaHref?: string;
   image?: string;
   eyebrow?: string;
+  /** Banner height. "full" = home-page-sized (default for backward compat). */
+  size?: "full" | "lg" | "md" | "sm";
 };
 
 export type StatsBlockData = {
