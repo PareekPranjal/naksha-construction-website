@@ -208,7 +208,13 @@ export async function RichText({ html, className, raw }: Props) {
     return raw ? <>{content}</> : <div className={`prose prose-neutral max-w-none ${className ?? ""}`}>{content}</div>;
   }
 
-  const clean = DOMPurify.sanitize(trimmed, {
+  // Old plain-text imports got every space converted to &nbsp; by the Quill
+  // editor on first save. Normalize back to regular spaces so words wrap.
+  // Keep an intentional single &nbsp; if surrounded by punctuation that
+  // suggests deliberate use (rare in this CMS — collapse everywhere).
+  const normalizedHtml = trimmed.replace(/&nbsp;/gi, " ").replace(/ /g, " ");
+
+  const clean = DOMPurify.sanitize(normalizedHtml, {
     ALLOWED_TAGS: Array.from(ALLOWED_TAGS),
     ALLOWED_ATTR: [
       "href", "src", "alt", "title", "class", "style", "target", "rel",
