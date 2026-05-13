@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { RichText } from "./RichText";
 
 /**
  * Render a multi-line text field as a sequence of <p> tags.
@@ -7,7 +8,7 @@ import { cn } from "@/lib/utils";
  *
  * Defaults render the body-text style used across the site.
  */
-export function Paragraphs({
+export async function Paragraphs({
   text,
   className,
   paragraphClassName,
@@ -19,6 +20,16 @@ export function Paragraphs({
   as?: "p" | "div";
 }) {
   if (!text) return null;
+  // Rich-text HTML (from the admin editor) → delegate to RichText so internal
+  // links, headings, iframes etc. render correctly. `raw` skips the prose
+  // wrapper so existing layouts don't shift.
+  if (/<[a-z!\/]/i.test(text)) {
+    return (
+      <div className={cn(className, paragraphClassName)}>
+        <RichText html={text} raw />
+      </div>
+    );
+  }
   const paragraphs = text.split(/\n+/).map((s) => s.trim()).filter(Boolean);
   if (paragraphs.length === 0) return null;
   if (Tag === "div") {

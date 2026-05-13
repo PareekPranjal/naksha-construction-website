@@ -8,6 +8,7 @@ import { ArticleCard } from "@/components/ArticleCard";
 import { CTABanner } from "@/components/CTABanner";
 import { AnimateInView } from "@/components/AnimateInView";
 import { cms } from "@/lib/api";
+import { RichText } from "@/components/RichText";
 import { formatDate } from "@/lib/utils";
 import {
   generateArticleMetadata,
@@ -77,21 +78,15 @@ export default async function ArticlePage({ params }: { params: { slug: string }
 
         <SectionContainer size="md">
           <article className="mx-auto max-w-reading">
-            <p className="serif text-h2 text-ink">{article.excerpt}</p>
-            {article.body.map((p, i) => (
-              <p key={i} className="mt-6 text-body text-concrete-text">
-                {p}
-              </p>
-            ))}
-            <blockquote className="my-10 border-l-2 border-accent pl-6 serif text-h3 text-ink">
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer fermentum
-              nibh ut enim suscipit, in pulvinar lectus tincidunt."
-            </blockquote>
-            {article.body.slice(0, 2).map((p, i) => (
-              <p key={`b-${i}`} className="mt-6 text-body text-concrete-text">
-                {p}
-              </p>
-            ))}
+            <div className="serif text-h2 text-ink prose-h2:serif">
+              <RichText html={raw.excerpt} raw />
+            </div>
+            <div className="mt-6">
+              <RichText
+                html={raw.body}
+                className="prose-p:mt-6 prose-p:text-body prose-p:text-concrete-text"
+              />
+            </div>
           </article>
         </SectionContainer>
 

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Paragraphs } from "./Paragraphs";
 
 export function PageHero({
   eyebrow,
@@ -36,7 +37,11 @@ export function PageHero({
             <h1 className="serif mt-4 text-display-lg md:text-[72px] md:leading-[1.05]">
               {title}
             </h1>
-            {sub && <p className="mt-5 max-w-2xl text-lead text-paper/85">{sub}</p>}
+            {sub && (
+              <div className="mt-5 max-w-2xl text-lead text-paper/85">
+                <Paragraphs text={sub} as="div" paragraphClassName="text-lead text-paper/85" />
+              </div>
+            )}
           </div>
         </div>
       </div>

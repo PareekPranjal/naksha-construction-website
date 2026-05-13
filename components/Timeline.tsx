@@ -1,4 +1,5 @@
 import { AnimateInView } from "./AnimateInView";
+import { Paragraphs } from "./Paragraphs";
 
 type Item = { year?: string; step?: string; title: string; body: string };
 
@@ -19,7 +20,9 @@ export function Timeline({ items }: { items: Item[] }) {
             <h3 className="serif mt-3 text-h2 text-ink">{it.title}</h3>
           </AnimateInView>
           <AnimateInView className="pl-10 md:pl-0" delay={0.1}>
-            <p className="text-body text-concrete-text">{it.body}</p>
+            <div className="text-body text-concrete-text">
+              <Paragraphs text={it.body} as="div" paragraphClassName="text-concrete-text" />
+            </div>
           </AnimateInView>
         </li>
       ))}

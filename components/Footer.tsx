@@ -47,7 +47,14 @@ export function Footer() {
           <div className="grid items-start gap-8 md:grid-cols-2">
             <div>
               <p className="serif text-h2">{footer.callout.heading}</p>
-              <p className="mt-3 max-w-md text-body text-paper/70">{footer.callout.body}</p>
+              {/^<[a-z!\/]/i.test(footer.callout.body ?? "") ? (
+                <div
+                  className="mt-3 max-w-md text-body text-paper/70 [&_a]:underline [&_p]:mt-3 [&_p:first-child]:mt-0"
+                  dangerouslySetInnerHTML={{ __html: footer.callout.body }}
+                />
+              ) : (
+                <p className="mt-3 max-w-md text-body text-paper/70">{footer.callout.body}</p>
+              )}
               <Link
                 href={footer.callout.ctaHref}
                 className="mt-6 inline-flex items-center rounded-card border border-paper/30 px-5 py-3 text-button text-paper hover:border-accent hover:text-accent"
