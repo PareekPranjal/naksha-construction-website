@@ -71,6 +71,13 @@ export type GalleryBlockData = {
   columns?: 2 | 3 | 4;
 };
 
+export type EmailQueryBlockData = {
+  type: "emailQuery";
+  heading?: string;
+  intro?: string;
+  ctaLabel?: string;
+};
+
 export type Block =
   | HeroBlockData
   | StatsBlockData
@@ -81,4 +88,5 @@ export type Block =
   | CommitmentsBlockData
   | ContactFormBlockData
   | LongformBlockData
-  | GalleryBlockData;
+  | GalleryBlockData
+  | EmailQueryBlockData;
