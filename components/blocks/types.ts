@@ -78,6 +78,25 @@ export type EmailQueryBlockData = {
   ctaLabel?: string;
 };
 
+export type MapBlockData = {
+  type: "map";
+  heading?: string;
+  /** Latitude. */
+  lat?: number;
+  /** Longitude. */
+  lng?: number;
+  /** Zoom level 1–20. Default 16. */
+  zoom?: number;
+  /** Optional pre-built Google embed URL (overrides lat/lng/zoom if set). */
+  embedUrl?: string;
+  /** Banner height. Default 'md'. */
+  height?: "sm" | "md" | "lg";
+  /** Label text for the "Open in Google Maps" link. */
+  linkLabel?: string;
+  /** Optional override for the open-in-maps URL. Defaults to a Google Maps search at the coordinates. */
+  linkHref?: string;
+};
+
 export type Block =
   | HeroBlockData
   | StatsBlockData
@@ -89,4 +108,5 @@ export type Block =
   | ContactFormBlockData
   | LongformBlockData
   | GalleryBlockData
-  | EmailQueryBlockData;
+  | EmailQueryBlockData
+  | MapBlockData;
