@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Menu } from "lucide-react";
 import { useSiteShell } from "@/lib/site-context";
@@ -21,6 +22,13 @@ export function Header({ transparentOverHero = false }: Props) {
   const { navbar } = useSiteShell();
   const NAV = navbar.items;
   const cta = navbar.cta;
+  const pathname = usePathname() || "/";
+  const isActive = (href: string, children?: { href: string }[]): boolean => {
+    if (!href) return false;
+    if (href === "/") return pathname === "/";
+    if (pathname === href || pathname.startsWith(href + "/")) return true;
+    return Array.isArray(children) && children.some((c) => c.href && (pathname === c.href || pathname.startsWith(c.href + "/")));
+  };
   const [scrolled, setScrolled] = useState(false);
   const [menuIdx, setMenuIdx] = useState<number | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -51,20 +59,28 @@ export function Header({ transparentOverHero = false }: Props) {
             <Wordmark variant={variant as "ink" | "paper"} />
 
             <nav className="hidden items-center gap-1 lg:flex">
-              {NAV.map((n, i) => (
-                <Link
-                  key={n.href}
-                  href={n.href}
-                  onMouseEnter={() => setMenuIdx(n.children ? i : null)}
-                  onFocus={() => setMenuIdx(n.children ? i : null)}
-                  className={cn(
-                    "rounded-card px-3 py-2 text-body-sm font-medium transition-colors",
-                    solid ? "text-ink hover:text-accent" : "text-paper hover:text-accent",
-                  )}
-                >
-                  {n.label}
-                </Link>
-              ))}
+              {NAV.map((n, i) => {
+                const active = isActive(n.href, n.children);
+                return (
+                  <Link
+                    key={n.href}
+                    href={n.href}
+                    onMouseEnter={() => setMenuIdx(n.children ? i : null)}
+                    onFocus={() => setMenuIdx(n.children ? i : null)}
+                    aria-current={active ? "page" : undefined}
+                    className={cn(
+                      "relative rounded-card px-3 py-2 text-body-sm font-medium transition-colors",
+                      active
+                        ? "text-accent after:absolute after:inset-x-3 after:-bottom-0.5 after:h-0.5 after:rounded-full after:bg-accent"
+                        : solid
+                          ? "text-ink hover:text-accent"
+                          : "text-paper hover:text-accent",
+                    )}
+                  >
+                    {n.label}
+                  </Link>
+                );
+              })}
             </nav>
 
             <div className="flex items-center gap-2">

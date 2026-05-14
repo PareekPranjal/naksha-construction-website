@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { ChevronDown, X } from "lucide-react";
 import { useSiteShell } from "@/lib/site-context";
@@ -12,6 +13,13 @@ export function MobileDrawer({ open, onClose }: { open: boolean; onClose: () => 
   const NAV = navbar.items;
   const cta = navbar.cta;
   const [openIdx, setOpenIdx] = useState<number | null>(null);
+  const pathname = usePathname() || "/";
+  const isActive = (href: string, children?: { href: string }[]): boolean => {
+    if (!href) return false;
+    if (href === "/") return pathname === "/";
+    if (pathname === href || pathname.startsWith(href + "/")) return true;
+    return Array.isArray(children) && children.some((c) => c.href && (pathname === c.href || pathname.startsWith(c.href + "/")));
+  };
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-[60] flex flex-col bg-paper">
@@ -69,7 +77,8 @@ export function MobileDrawer({ open, onClose }: { open: boolean; onClose: () => 
                 <Link
                   href={n.href}
                   onClick={onClose}
-                  className="block py-4 text-h3 serif"
+                  aria-current={isActive(n.href) ? "page" : undefined}
+                  className={cn("block py-4 text-h3 serif", isActive(n.href) && "text-accent")}
                 >
                   {n.label}
                 </Link>
