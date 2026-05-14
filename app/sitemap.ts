@@ -24,7 +24,6 @@ const STATIC_ROUTES: { path: string; priority: number; changeFrequency: Metadata
   { path: "/", priority: 1.0, changeFrequency: "weekly" },
   { path: "/about", priority: 0.8, changeFrequency: "monthly" },
   { path: "/markets", priority: 0.8, changeFrequency: "monthly" },
-  { path: "/services", priority: 0.9, changeFrequency: "monthly" },
   { path: "/projects", priority: 0.9, changeFrequency: "weekly" },
   { path: "/sustainability", priority: 0.6, changeFrequency: "yearly" },
   { path: "/careers", priority: 0.7, changeFrequency: "weekly" },
@@ -41,9 +40,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = SITE_URL;
   const now = new Date();
 
-  const [projects, services, markets, articles, jobs] = await Promise.all([
+  const [projects, markets, articles, jobs] = await Promise.all([
     fetchGroup<Indexable>("/projects"),
-    fetchGroup<Indexable>("/services"),
     fetchGroup<Indexable>("/markets"),
     fetchGroup<Indexable>("/articles"),
     fetchGroup<Indexable>("/jobs"),
@@ -70,7 +68,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: r.priority,
     })),
     ...dynRoutes(projects, "/projects", 0.8, "monthly"),
-    ...dynRoutes(services, "/services", 0.8, "monthly"),
     ...dynRoutes(markets, "/markets", 0.7, "monthly"),
     ...dynRoutes(articles, "/insights", 0.6, "monthly"),
     ...dynRoutes(jobs, "/careers", 0.7, "weekly"),
