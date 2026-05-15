@@ -71,7 +71,7 @@ export default async function ArticlePage({ params }: { params: { slug: string }
 
         <SectionContainer size="md">
           <div className="relative mx-auto aspect-[16/9] w-full max-w-5xl overflow-hidden rounded-card bg-ink/10">
-            <Image src={article.cover} alt="" fill priority sizes="100vw" className="object-cover" />
+            <Image src={article.cover} alt={article.coverAlt ?? article.title} fill priority sizes="100vw" className="object-cover" />
             {/* attribution: cover image from picsum.photos (free placeholder) */}
           </div>
         </SectionContainer>

@@ -7,6 +7,7 @@ import { StatStrip } from "@/components/StatCounter";
 import { CTABanner } from "@/components/CTABanner";
 import { LOREM } from "@/lib/data";
 import { generatePageMetadata } from "@/lib/seo";
+import { getSiteShell } from "@/lib/cms-server";
 import { picsum } from "@/lib/utils";
 
 export async function generateMetadata() {
@@ -29,7 +30,10 @@ const STATS = [
   { value: 0, suffix: "", label: "Lost-time incidents in the past year" },
 ];
 
-export default function WhyNakshaPage() {
+export default async function WhyNakshaPage() {
+  const shell = await getSiteShell();
+  const heroSlot = shell.siteSettings.heroImages?.careersWhyNaksha;
+  const sectionSlot = shell.siteSettings.heroImages?.whyNakshaSection;
   return (
     <>
       <Header />
@@ -38,7 +42,8 @@ export default function WhyNakshaPage() {
           eyebrow="Why Naksha"
           title="A studio that takes its people as seriously as its buildings."
           sub="What we look for, what we offer, and how we've shaped a place to do good work for a long time."
-          image={picsum("why-naksha-hero", 1920, 1080)}
+          image={heroSlot?.url || picsum("why-naksha-hero", 1920, 1080)}
+          imageAlt={heroSlot?.alt}
         />
 
         <SectionContainer size="lg">
@@ -46,7 +51,8 @@ export default function WhyNakshaPage() {
             eyebrow="The studio"
             heading="A practice — not a project shop."
             body={LOREM.long}
-            image={picsum("why-naksha-1", 1400, 1000)}
+            image={sectionSlot?.url || picsum("why-naksha-1", 1400, 1000)}
+            imageAlt={sectionSlot?.alt}
           />
         </SectionContainer>
 

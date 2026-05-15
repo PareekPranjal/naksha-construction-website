@@ -1,4 +1,5 @@
 import { generatePageMetadata } from "@/lib/seo";
+import { getSiteShell } from "@/lib/cms-server";
 import InsightsClient from "./InsightsClient";
 
 export const revalidate = 60;
@@ -11,6 +12,8 @@ export async function generateMetadata() {
   });
 }
 
-export default function InsightsPage() {
-  return <InsightsClient />;
+export default async function InsightsPage() {
+  const shell = await getSiteShell();
+  const hero = shell.siteSettings.heroImages?.insightsIndex;
+  return <InsightsClient heroImage={hero?.url} heroImageAlt={hero?.alt} />;
 }

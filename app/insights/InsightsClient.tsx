@@ -13,12 +13,18 @@ import { picsum } from "@/lib/utils";
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
 
-export default function InsightsClient() {
+export default function InsightsClient({
+  heroImage,
+  heroImageAlt,
+}: {
+  heroImage?: string;
+  heroImageAlt?: string;
+} = {}) {
   const [articles, setArticles] = useState<Article[]>([]);
   useEffect(() => {
     fetch(`${API}/articles`)
       .then((r) => r.json())
-      .then((rows: Array<{ slug: string; title: string; excerpt: string; body: string; cover: string | null; author: string; category: string | null; publishedAt: string }>) =>
+      .then((rows: Array<{ slug: string; title: string; excerpt: string; body: string; cover: string | null; coverAlt: string | null; author: string; category: string | null; publishedAt: string }>) =>
         setArticles(
           rows.map((a) => ({
             slug: a.slug,
@@ -28,6 +34,7 @@ export default function InsightsClient() {
             excerpt: a.excerpt,
             author: a.author,
             cover: a.cover ?? "",
+            coverAlt: a.coverAlt ?? a.title,
             body: a.body ? a.body.split(/\n\n+/).filter(Boolean) : [],
           })),
         ),
@@ -50,7 +57,8 @@ export default function InsightsClient() {
           eyebrow="Insights"
           title="Field notes from the studio."
           sub="Articles, observations, and the occasional lesson learned the hard way."
-          image={picsum("insights-hero", 1920, 1080)}
+          image={heroImage || picsum("insights-hero", 1920, 1080)}
+          imageAlt={heroImageAlt}
           height="sm"
         />
 

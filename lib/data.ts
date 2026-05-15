@@ -34,6 +34,7 @@ export type Market = {
   intro: string;
   capabilities: string[];
   image: string;
+  imageAlt?: string;
   stats: { label: string; value: string }[];
 };
 
@@ -317,7 +318,8 @@ export type Project = {
   duration: string;
   client: string;
   cover: string;
-  gallery: string[];
+  coverAlt: string;
+  gallery: { url: string; alt: string }[];
   challenge: string;
   solution: string;
   outcomes: string[];
@@ -366,11 +368,12 @@ export const PROJECTS: Project[] = PROJECT_TITLES.map((p, i) => {
     duration: `${18 + (i % 18)} months`,
     client: `Confidential Client ${String.fromCharCode(65 + i)}`,
     cover: picsum(`project-${i}-cover`, 1600, 1000),
+    coverAlt: `${p.title} — ${p.category} project in ${city}`,
     gallery: [
-      picsum(`project-${i}-g1`, 1400, 900),
-      picsum(`project-${i}-g2`, 1400, 900),
-      picsum(`project-${i}-g3`, 1400, 900),
-      picsum(`project-${i}-g4`, 1400, 900),
+      { url: picsum(`project-${i}-g1`, 1400, 900), alt: `${p.title} construction view 1` },
+      { url: picsum(`project-${i}-g2`, 1400, 900), alt: `${p.title} construction view 2` },
+      { url: picsum(`project-${i}-g3`, 1400, 900), alt: `${p.title} construction view 3` },
+      { url: picsum(`project-${i}-g4`, 1400, 900), alt: `${p.title} construction view 4` },
     ],
     challenge: LOREM.long,
     solution: LOREM.long,
@@ -396,6 +399,7 @@ export type Leader = {
   role: string;
   bio: string;
   avatar: string;
+  avatarAlt: string;
 };
 
 export const LEADERS: Leader[] = [
@@ -411,6 +415,7 @@ export const LEADERS: Leader[] = [
   ...p,
   bio: LOREM.medium,
   avatar: picsum(`leader-${i}`, 800, 800),
+  avatarAlt: `${p.name}, ${p.role}`,
 }));
 
 // ── Insights / Articles ───────────────────────────────────────────────────────
@@ -423,6 +428,7 @@ export type Article = {
   excerpt: string;
   author: string;
   cover: string;
+  coverAlt: string;
   body: string[];
 };
 
@@ -451,6 +457,7 @@ export const ARTICLES: Article[] = ARTICLE_TITLES.map((a, i) => {
     excerpt: LOREM.medium,
     author: LEADERS[i % LEADERS.length].name,
     cover: picsum(`article-${i}`, 1600, 1000),
+    coverAlt: a.t,
     body: [...LOREM.paragraphs, ...LOREM.paragraphs],
   };
 });
@@ -506,6 +513,7 @@ export type Location = {
   phone: string;
   email: string;
   image: string;
+  imageAlt?: string;
 };
 
 export const LOCATIONS: Location[] = [

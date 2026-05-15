@@ -10,6 +10,7 @@ export type HeroBlockData = {
   ctaLabel?: string;
   ctaHref?: string;
   image?: string;
+  imageAlt?: string;
   eyebrow?: string;
   /** Banner height. "full" = home-page-sized (default for backward compat). */
   size?: "full" | "lg" | "md" | "sm";
@@ -52,7 +53,7 @@ export type TimelineBlockData = {
 
 export type CommitmentsBlockData = {
   type: "commitments";
-  items?: { key?: string; title: string; body: string; image?: string }[];
+  items?: { key?: string; title: string; body: string; image?: string; imageAlt?: string }[];
 };
 
 export type ContactFormBlockData = { type: "contactForm" };

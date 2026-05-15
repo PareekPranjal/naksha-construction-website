@@ -57,7 +57,7 @@ export default async function ProjectDetailPage({ params }: { params: { slug: st
       <main className="pt-[64px] md:pt-[72px]">
         {/* Cover */}
         <section className="relative h-[80vh] min-h-[520px] w-full overflow-hidden bg-ink text-paper">
-          <Image src={project.cover} alt="" fill priority sizes="100vw" className="object-cover" />
+          <Image src={project.cover} alt={project.coverAlt ?? ""} fill priority sizes="100vw" className="object-cover" />
           <div className="absolute inset-0 bg-gradient-to-b from-ink/30 via-ink/40 to-ink/80" />
           <div className="relative z-10 flex h-full items-end pb-12 md:pb-20">
             <div className="wrap">
@@ -124,7 +124,8 @@ export default async function ProjectDetailPage({ params }: { params: { slug: st
             eyebrow="Challenge"
             heading="The brief, and what made it interesting."
             body={project.challenge}
-            image={project.gallery[0]}
+            image={project.gallery[0]?.url ?? ""}
+            imageAlt={project.gallery[0]?.alt ?? project.title}
           />
         </SectionContainer>
 
@@ -134,7 +135,8 @@ export default async function ProjectDetailPage({ params }: { params: { slug: st
             heading="How we delivered it."
             body={project.solution}
             bullets={project.outcomes}
-            image={project.gallery[1]}
+            image={project.gallery[1]?.url ?? ""}
+            imageAlt={project.gallery[1]?.alt ?? project.title}
             reverse
           />
         </SectionContainer>

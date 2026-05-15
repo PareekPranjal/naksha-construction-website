@@ -49,6 +49,7 @@ export type ApiProject = ApiCollectionSEO & {
   summary: string;
   description: string;
   coverImage: string | null;
+  coverImageAlt: string | null;
   gallery: { url: string; alt: string }[];
   highlights: string[];
   updatedAt: string;
@@ -61,6 +62,7 @@ export type ApiArticle = ApiCollectionSEO & {
   excerpt: string;
   body: string;
   cover: string | null;
+  coverAlt: string | null;
   author: string;
   category: string | null;
   publishedAt: string;
@@ -89,6 +91,7 @@ type ApiLocation = {
   phone: string | null;
   email: string | null;
   image: string | null;
+  imageAlt: string | null;
 };
 
 export type ApiLeader = ApiCollectionSEO & {
@@ -98,6 +101,7 @@ export type ApiLeader = ApiCollectionSEO & {
   role: string;
   bio: string;
   portrait: string | null;
+  portraitAlt: string | null;
   updatedAt: string;
 };
 
@@ -113,7 +117,8 @@ function adaptProject(p: ApiProject): Project {
     duration: p.duration ?? "",
     client: p.client ?? "",
     cover: p.coverImage ?? "",
-    gallery: p.gallery.map((g) => g.url),
+    coverAlt: p.coverImageAlt ?? `${p.title}, ${p.location}`,
+    gallery: p.gallery.map((g) => ({ url: g.url, alt: g.alt ?? p.title })),
     challenge: p.summary,
     solution: p.description,
     outcomes: p.highlights ?? [],
@@ -129,6 +134,7 @@ function adaptArticle(a: ApiArticle): Article {
     excerpt: a.excerpt,
     author: a.author,
     cover: a.cover ?? "",
+    coverAlt: a.coverAlt ?? a.title,
     body: a.body ? a.body.split(/\n\n+/).map((s) => s.trim()).filter(Boolean) : [],
   };
 }
@@ -154,6 +160,7 @@ function adaptLocation(l: ApiLocation) {
     phone: l.phone ?? "",
     email: l.email ?? "",
     image: l.image ?? "",
+    imageAlt: l.imageAlt ?? `${l.city} office`,
   };
 }
 
@@ -163,6 +170,7 @@ function adaptLeader(l: ApiLeader): Leader {
     role: l.role,
     bio: l.bio,
     avatar: l.portrait ?? "",
+    avatarAlt: l.portraitAlt ?? `${l.name}, ${l.role}`,
   };
 }
 
@@ -173,6 +181,7 @@ export type ApiMarket = ApiCollectionSEO & {
   title: string;
   summary: string;
   image: string | null;
+  imageAlt: string | null;
   body: string;
   updatedAt: string;
 };
@@ -183,6 +192,7 @@ export type ApiService = ApiCollectionSEO & {
   title: string;
   summary: string;
   icon: string | null;
+  iconAlt: string | null;
   bullets: string[];
   body: string;
   updatedAt: string;
@@ -195,6 +205,7 @@ type ApiTestimonial = {
   role: string | null;
   company: string | null;
   avatar: string | null;
+  avatarAlt: string | null;
 };
 
 export type ApiPage = {

@@ -9,24 +9,29 @@ export function CTABanner({
   heading,
   sub,
   cta = { label: "Start a Project", href: "/contact" },
-  image = picsum("cta-banner", 2000, 1100),
+  image,
+  imageAlt,
 }: {
   eyebrow?: string;
   heading: string;
   sub?: string;
   cta?: { label: string; href: string };
   image?: string;
+  imageAlt?: string;
 }) {
+  // Fall back to a deterministic placeholder when no image is supplied.
+  // Callers should pass image+imageAlt from siteSettings.heroImages.ctaDefault
+  // (or a block field) so admins can swap this without touching code.
+  const src = image || picsum("cta-banner", 2000, 1100);
   return (
     <section className="relative w-full overflow-hidden bg-ink text-paper">
       <Image
-        src={image}
-        alt=""
+        src={src}
+        alt={imageAlt ?? ""}
         fill
         sizes="100vw"
         className="object-cover opacity-50"
       />
-      {/* attribution: image from picsum.photos (free placeholder) */}
       <div className="absolute inset-0 bg-ink/55" />
       <div className="relative z-10 wrap py-20 md:py-28 lg:py-36">
         <div className="max-w-3xl">

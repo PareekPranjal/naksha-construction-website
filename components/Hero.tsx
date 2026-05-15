@@ -12,17 +12,24 @@ export function Hero({
   sub,
   primaryCta = { label: "Start a Project", href: "/contact" },
   secondaryCta = { label: "View our work", href: "/projects" },
+  posterUrl,
+  posterAlt = "",
 }: {
   eyebrow?: string;
   headline: string;
   sub: string;
   primaryCta?: { label: string; href: string };
   secondaryCta?: { label: string; href: string };
+  /** Admin-controlled poster image (siteSettings.heroImages.homePoster). */
+  posterUrl?: string;
+  posterAlt?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
   const { scrollY } = useScroll();
   const y = useTransform(scrollY, [0, 600], [0, reduce ? 0 : 120]);
+  const poster = posterUrl || SITE.heroPosterImage;
+  const alt = posterAlt || "Construction site";
 
   return (
     <section
@@ -37,19 +44,18 @@ export function Hero({
             muted
             loop
             playsInline
-            poster={SITE.heroPosterImage}
+            poster={poster}
           >
             <source src={SITE.heroVideoUrl} type="video/mp4" />
           </video>
         ) : (
           /* eslint-disable-next-line @next/next/no-img-element */
           <img
-            src={SITE.heroPosterImage}
-            alt="Construction site"
+            src={poster}
+            alt={alt}
             className="h-full w-full object-cover"
           />
         )}
-        {/* attribution: poster image from picsum.photos (free placeholder) */}
         <div className="absolute inset-0 bg-gradient-to-b from-ink/30 via-ink/40 to-ink/70" />
       </motion.div>
 

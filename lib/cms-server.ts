@@ -6,6 +6,20 @@ import { NAV, SITE, FOOTER_COLUMNS, type NavItem } from "./site";
 
 export type SocialLink = { icon: string; label?: string; url: string };
 
+export type ImageRef = { url: string; alt: string };
+
+// Named hero-image slots controlled from admin Site Settings → Page heroes.
+// Used by pages whose hero isn't authored as a CMS block (home, insights
+// index, why-naksha, CTA banner fallback). Add a new key here, in the admin
+// settings page, AND in the page that consumes it.
+export type HeroImages = {
+  homePoster: ImageRef;
+  insightsIndex: ImageRef;
+  careersWhyNaksha: ImageRef;
+  whyNakshaSection: ImageRef;
+  ctaDefault: ImageRef;
+};
+
 export type SiteSettings = {
   name: string;
   shortName: string;
@@ -29,6 +43,8 @@ export type SiteSettings = {
     twitterHandle?: string;
     googleVerification?: string;
   };
+  // Page hero images (named slots).
+  heroImages?: Partial<HeroImages>;
   // Social links (managed list with icon picker in admin)
   socials?: SocialLink[];
   // Legacy single-key social shape (still supported as fallback)
@@ -82,7 +98,29 @@ const FALLBACK_SETTINGS: SiteSettings = {
   address: { ...SITE.address },
   social: { ...SITE.social },
   socials: [],
+  heroImages: {
+    homePoster: { url: "", alt: "" },
+    insightsIndex: { url: "", alt: "" },
+    careersWhyNaksha: { url: "", alt: "" },
+    whyNakshaSection: { url: "", alt: "" },
+    ctaDefault: { url: "", alt: "" },
+  },
 };
+
+// Resolve one hero slot with safe fallbacks. Returns the admin-saved url+alt
+// when present, otherwise the supplied fallbacks. Always returns a usable
+// ImageRef so call sites don't need null checks.
+export function getHero(
+  settings: SiteSettings,
+  slot: keyof HeroImages,
+  fallback: ImageRef,
+): ImageRef {
+  const saved = settings.heroImages?.[slot];
+  return {
+    url: saved?.url || fallback.url,
+    alt: saved?.alt || fallback.alt,
+  };
+}
 
 export async function getSiteShell(): Promise<SiteShell> {
   const [nav, foot, settings] = await Promise.all([

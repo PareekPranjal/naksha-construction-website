@@ -11,7 +11,7 @@ export function MarketCard({ market }: { market: Market }) {
     >
       <Image
         src={market.image}
-        alt={market.title}
+        alt={market.imageAlt || market.title}
         fill
         sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
         className="object-cover opacity-90 transition-all duration-700 ease-out-expo group-hover:scale-[1.05] group-hover:opacity-100"

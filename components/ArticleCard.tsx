@@ -12,7 +12,7 @@ export function ArticleCard({ article, featured = false }: { article: Article; f
       <div className="relative aspect-[16/9] w-full overflow-hidden rounded-card bg-ink/10">
         <Image
           src={article.cover}
-          alt={article.title}
+          alt={article.coverAlt || article.title}
           fill
           sizes={featured ? "(min-width: 1024px) 66vw, 100vw" : "(min-width: 1024px) 33vw, 100vw"}
           className="object-cover transition-transform duration-700 ease-out-expo group-hover:scale-[1.04]"

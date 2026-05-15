@@ -46,6 +46,7 @@ export default async function MarketDetailPage({ params }: { params: { sector: s
           title={market.title}
           sub={market.summary}
           image={market.image ?? picsum(`market-${market.slug}`, 1920, 1080)}
+          imageAlt={market.imageAlt ?? `${market.title} construction projects in Rajasthan`}
         />
 
         <SectionContainer size="md">
@@ -78,7 +79,8 @@ export default async function MarketDetailPage({ params }: { params: { sector: s
             eyebrow="What we deliver"
             heading={`${market.title} expertise.`}
             body={market.body}
-            image={picsum(`${market.slug}-capabilities`, 1400, 1000)}
+            image={market.image ?? picsum(`${market.slug}-capabilities`, 1400, 1000)}
+            imageAlt={market.imageAlt ?? `${market.title} capabilities`}
           />
         </SectionContainer>
 

@@ -6,12 +6,14 @@ export function PageHero({
   title,
   sub,
   image,
+  imageAlt,
   height = "md",
 }: {
   eyebrow?: string;
   title: string;
   sub?: string;
   image: string;
+  imageAlt?: string;
   height?: "sm" | "md" | "lg";
 }) {
   const h = {
@@ -23,7 +25,7 @@ export function PageHero({
     <section className={`relative w-full overflow-hidden bg-ink text-paper ${h}`}>
       <Image
         src={image}
-        alt=""
+        alt={imageAlt ?? ""}
         fill
         priority
         sizes="100vw"

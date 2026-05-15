@@ -12,7 +12,7 @@ export function ProjectCard({ project, eager = false }: { project: Project; eage
       <div className="relative aspect-[4/3] w-full overflow-hidden bg-ink/10">
         <Image
           src={project.cover}
-          alt={`${project.title}, ${project.location}`}
+          alt={project.coverAlt || `${project.title}, ${project.location}`}
           fill
           sizes="(min-width: 1024px) 50vw, 100vw"
           loading={eager ? "eager" : "lazy"}

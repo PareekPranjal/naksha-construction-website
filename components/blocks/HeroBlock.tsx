@@ -19,7 +19,7 @@ export function HeroBlock({ block }: { block: HeroBlockData }) {
         <>
           <Image
             src={block.image}
-            alt=""
+            alt={block.imageAlt ?? ""}
             fill
             priority
             sizes="100vw"

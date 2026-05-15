@@ -16,7 +16,7 @@ export function CommitmentsBlock({ block }: { block: CommitmentsBlockData }) {
               <div className="relative aspect-[16/10] w-full overflow-hidden bg-ink/5">
                 <Image
                   src={c.image}
-                  alt={c.title || ""}
+                  alt={c.imageAlt || c.title || ""}
                   fill
                   sizes="(min-width: 768px) 50vw, 100vw"
                   className="object-cover"
